@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orders } from 'src/Entities/Order.Entity';
 import { Between, Repository } from 'typeorm';
@@ -67,23 +67,33 @@ export class OrdersService {
   }
 
   // Method to find transactions by selected date
-  async findOrdersTransactionBySelectedDate(selectedDate: string) {
+  async findOrdersTransactionsByDate(date: string, res: Response) {
+    console.log(date);
     try {
-      const Ordertransactions = await this.OrderRepository.createQueryBuilder(
-        'Orders',
-      )
-        .where('OrderDate(Orders.OrderDate) = :selectedDate', { selectedDate })
-        .getMany();
+      // Parse the date string to a Date object for comparison
+      const newDate = new Date(date);
+      console.log(newDate);
+      const data = await this.OrderRepository.find({
+        where: {
+          OrderDate: newDate,
+        },
+      });
+      console.log(data);
+      if (!data || data.length === 0) {
+        // Handle the case where no data is found
+        throw new NotFoundException(
+          'No order transactions found for the provided date',
+        );
+      }
 
-      return Ordertransactions;
+      // Return the found data
+      return res.status(200).json({ data });
     } catch (error) {
-      console.error(
-        'An error occurred when selecting the chosen date',
-        error,
-      );
-      throw new Error(
-        'Could not retrieve order transactions for the selected date.',
-      );
+      // Handle any errors that occur during the process
+      console.error('Error fetching order transactions by date:', error);
+      return res
+        .status(500)
+        .json({ message: 'Internal server error', error: error.message });
     }
   }
 
