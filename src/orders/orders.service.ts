@@ -93,50 +93,51 @@ export class OrdersService {
     return await this.OrderRepository.find();
   }
 
-  async findOrdersByName(name: string): Promise<Orders[] | string> {
-    const queryBuilder = this.OrderRepository.createQueryBuilder('order');
 
+
+  async findOrdersByCustomerName(name: string): Promise<Orders[] | string> {
+    const queryBuilder = this.OrderRepository.createQueryBuilder('Orders');
+  
     try {
       const results = await queryBuilder
-        .where('LOWER(CONCAT(order.CustomerName)) LIKE LOWER(:FullName)', {
-          FullName: `%${name}%`,
-        })
+        .where('LOWER(Orders.CustomerName) LIKE LOWER(:name)', { name: `%${name}%` })  // Directly use CustomerName
         .getMany();
-
+  
       if (results.length === 0) {
-        return 'Order not found';
+        return 'Name not found';  // Adjusted return message
       }
-
+  
       return results;
     } catch (error) {
-      console.error(
-        `Error while searching for an order by name: ${error.message}`,
-      );
-      throw new Error(`Error while searching an order by name: ${error.message}`);
+      console.error(`Error while searching for customer by name: ${error.message}`);
+      throw new Error(`Error while searching for customer by name: ${error.message}`);
     }
   }
+  
 
-  async findTotalAmountOfCurrentDay(): Promise<number> {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0);
-  
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999);
-  
-    try {
-      const result = await this.OrderRepository
-        .createQueryBuilder('Orders') 
-        .select('SUM(Orders."Price")', 'total') 
-        .where('Orders."OrderDate" BETWEEN :startOfDay AND :endOfDay', { startOfDay, endOfDay }) 
-        .getRawOne();
-  
-      return result.total || 0; // Return 0 if there is no result
-    } catch (error) {
-      console.error(`Error while fetching total amount for the current day: ${error.message}`);
-      throw new Error(`Error while fetching total amount: ${error.message}`);
-    }
+//current daytotal sales
+async findTotalAmountOfCurrentDay(): Promise<number> {
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  try {
+    const result = await this.OrderRepository
+      .createQueryBuilder('orders')  // Ensure the alias matches your query
+      .select('SUM(orders."Price")', 'total') 
+      .where('orders."OrderDate" BETWEEN :startOfDay AND :endOfDay', { startOfDay, endOfDay }) 
+      .getRawOne();
+
+    return result.total || 0; // Return 0 if there is no result
+  } catch (error) {
+    console.error(`Error while fetching total amount for the current day: ${error.message}`);
+    throw new Error(`Error while fetching total amount: ${error.message}`);
   }
-  
+}
+
+
 
   async findAllOrdersByCurrentDay(): Promise<Orders[] | string> {
     const today = new Date();
@@ -167,6 +168,9 @@ export class OrdersService {
       throw new Error(`Error while fetching orders: ${error.message}`);
     }
   }
+
+
+
 
   async updateOrdersById(
     id: number,

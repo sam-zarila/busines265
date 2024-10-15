@@ -18,7 +18,7 @@ export class OrdersController {
   async createNewOrder (@Body() OrderDTO: CreateOrderDto) {
     try {
       console.log(
-        'Incoming finance items:',
+        'Incoming order items:',
         JSON.stringify(OrderDTO, null, 2),
       ); // Log entire request body
       const result =
@@ -50,6 +50,7 @@ export class OrdersController {
     const totalAmount = await this.ordersService.findTotalAmountOfCurrentDay();
     return { totalAmount };
   }
+  
 
   @Get('search/:orderNumber')
   async getOrderByOrderNumber(@Param('orderNumber') orderNumber: string): Promise<Orders | string> {
@@ -69,28 +70,26 @@ export class OrdersController {
 
 
 
-  @Get(':Ordername')
-      @ApiOperation({ summary: 'Search order by name' })
-      @ApiResponse({ status: 200, description: 'order found successfully' })
-      async GetOrdersByName(@Param('name') name: string): Promise<Orders[] | string> {
-        if (!name) {
-          return 'Name is not provided';
-        }
-      
-        const results = await this.ordersService.findOrdersByName(name);
-      
-        if (results.length === 0) {
-          return 'order not found';
-        }
-      
-        return results;
-      }
-
-
-
-
+  @Get('search/:CustomerName')
+  @ApiOperation({ summary: 'Search order by customer name' })  // Updated summary
+  @ApiResponse({ status: 200, description: 'Order found successfully' })
+  @ApiResponse({ status: 404, description: 'Order not found' })
+  async getOrdersByCustomerName(@Param('name') name: string): Promise<Orders[] | string> {
+    if (!name) {
+      return 'Name is not provided';
+    }
+  
+    const results = await this.ordersService.findOrdersByCustomerName(name);
+  
+    if (typeof results === 'string') {
+      return results;  // This will handle the 'Name not found' message
+    }
+  
+    return results;
+  }
+  
     
-  @Get('/day')
+  @Get('/todayOrders')
   @ApiOperation({summary:'Get all orders for the current day'})
   @ApiResponse({ status: 200, description: 'return all orders by current day ' })
   async getOrdersByDay():Promise<Orders[] | string> {
@@ -101,11 +100,11 @@ export class OrdersController {
 
   @Get('byselectedDate')
   @ApiOperation({
-    summary: 'Get financial transaction by selected date',
+    summary: 'Get orders transaction by selected date',
   })
   @ApiResponse({
     status: 200,
-    description: 'Returns financial transaction by selected date',
+    description: 'Returns orders transaction by selected date',
   })
 
   
