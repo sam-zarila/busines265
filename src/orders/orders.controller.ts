@@ -98,31 +98,30 @@ export class OrdersController {
 
   
   
-  @Get('/date')
-  @ApiOperation({ summary: 'Get order transactions by date' })
+
+  @Get('byselectedDate')
+  @ApiOperation({
+    summary: 'Get financial transaction by selected date',
+  })
   @ApiResponse({
     status: 200,
-    description: 'Returns order transactions for the provided date',
+    description: 'Returns financial transaction by selected date',
   })
-  async findOrdersTransactionsByDate(
-    @Query('date') dateString: string,
-    @Res() res: Response,
-  ) {
-    console.log(dateString);
+  
+  async getOrderTransactionsSelectedByDate(@Query() selectedDateDTO: selectedDateDTO) {
+    const { date } = selectedDateDTO; // Extract the date from the DTO
+    console.log(`Request received for date: ${date}`);  // Logging the incoming request
     try {
-      return await this.ordersService.findOrdersTransactionsByDate(
-        dateString,
-        res,
-      );
+      const transactions = await this.ordersService.findOrderTransactionBySelectedDate(date);
+      return transactions;
     } catch (error) {
-      // Handle any errors that occur during the process
-      console.error('Error fetching order transactions by date:', error);
-      return res
-        .status(500)
-        .json({ message: 'Internal server error', error: error.message });
+      console.error('Error retrieving order transactions:', error);
+      return {
+        message: 'Error retrieving order transactions for the selected date.',
+        error: error.message,
+      };
     }
   }
-
 
   
 

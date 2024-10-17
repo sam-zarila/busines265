@@ -62,10 +62,6 @@ export class  CreateOrderDto{
 
 export class UpdateOrderDto{
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    OrderNumber:string;
 
     @IsNotEmpty()
     @IsString()

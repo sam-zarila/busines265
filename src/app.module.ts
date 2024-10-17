@@ -4,23 +4,15 @@ import { OrdersModule } from './orders/orders.module'; // Adjust the import base
 import { Orders } from './Entities/Order.Entity';
 
 // Log environment variables for debugging
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_USERNAME:', process.env.DB_USERNAME);
-console.log('DB_PASSWORD:', process.env.DB_PASSWORD);
-console.log('DB_DATABASE:', process.env.DB_DATABASE);
+console.log('DATABASE_URL:', process.env.DATABASE_URL);
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'business',
+      url: 'postgres://qdjkkngz:oB8xjyAQIR9WsqmZiGlf808y8oH819c0@raja.db.elephantsql.com/qdjkkngz', // Full connection URL
       entities: [Orders],
-      synchronize: true,
+      synchronize: true,  // Set to false in production to prevent unwanted schema changes
     }),
     
     OrdersModule,

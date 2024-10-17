@@ -67,35 +67,21 @@ export class OrdersService {
   }
 
   // Method to find transactions by selected date
-  async findOrdersTransactionsByDate(date: string, res: Response) {
-    console.log(date);
+  async findOrderTransactionBySelectedDate(selectedDate: string) {
     try {
-      // Parse the date string to a Date object for comparison
-      const newDate = new Date(date);
-      console.log(newDate);
-      const data = await this.OrderRepository.find({
-        where: {
-          OrderDate: newDate,
-        },
-      });
-      console.log(data);
-      if (!data || data.length === 0) {
-        // Handle the case where no data is found
-        throw new NotFoundException(
-          'No order transactions found for the provided date',
-        );
-      }
+        // Use a query builder to find order transactions on the selected date
+        const transactions = await this.OrderRepository.createQueryBuilder('Orders')
+            .where('DATE(Orders. OrderDate) = :selectedDate', { selectedDate })
+            .getMany();
 
-      // Return the found data
-      return res.status(200).json({ data });
+        return transactions;
     } catch (error) {
-      // Handle any errors that occur during the process
-      console.error('Error fetching order transactions by date:', error);
-      return res
-        .status(500)
-        .json({ message: 'Internal server error', error: error.message });
+        console.error("An error occurred when selecting the chosen date", error);
+        throw new Error("Could not retrieve order transactions for the selected date.");
     }
-  }
+}
+
+
 
   // Other methods in the service...
 
@@ -207,6 +193,10 @@ async findTotalAmountOfCurrentDay(): Promise<number> {
 
       if (updatedOrderDetails.ProductName !== undefined) {
         updateObject.ProductName = updatedOrderDetails.ProductName;
+      }
+
+      if (updatedOrderDetails.Description !== undefined) {
+        updateObject.Description = updatedOrderDetails.Description;
       }
 
       if (updatedOrderDetails.PhoneNumber !== undefined) {
