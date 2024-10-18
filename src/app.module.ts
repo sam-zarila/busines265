@@ -10,7 +10,13 @@ console.log('DATABASE_URL:', process.env.DATABASE_URL);
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      url: 'postgres://qdjkkngz:oB8xjyAQIR9WsqmZiGlf808y8oH819c0@raja.db.elephantsql.com/qdjkkngz', // Full connection URL
+      host:'localhost',
+      port:5432,
+      database:'business',
+      password:'1234',
+      username:'postgres',
+
+      // url: 'postgres://qdjkkngz:oB8xjyAQIR9WsqmZiGlf808y8oH819c0@raja.db.elephantsql.com/qdjkkngz', // Full connection URL
       entities: [Orders],
       synchronize: true,  // Set to false in production to prevent unwanted schema changes
     }),

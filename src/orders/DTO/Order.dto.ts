@@ -73,10 +73,6 @@ export class UpdateOrderDto{
     @ApiProperty()
     ProductName:string;
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    Price:number;
 
     @IsNotEmpty()
     @IsString()
@@ -98,10 +94,7 @@ export class UpdateOrderDto{
     @ApiProperty()
     PhoneNumber:string;
 
-    @IsNotEmpty()
-    @IsString()
-    @ApiProperty()
-    OrderDate:Date;
+   
 
 
 }
@@ -113,5 +106,5 @@ export class UpdateOrderDto{
 
 export class selectedDateDTO {
     @IsDateString()
-    date: string;
+    OrderDate: string;
   }

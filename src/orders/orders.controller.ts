@@ -70,24 +70,23 @@ export class OrdersController {
 
 
 
-  @Get('search/:CustomerName')
-  @ApiOperation({ summary: 'Search order by customer name' })  // Updated summary
-  @ApiResponse({ status: 200, description: 'Order found successfully' })
-  @ApiResponse({ status: 404, description: 'Order not found' })
-  async getOrdersByCustomerName(@Param('name') name: string): Promise<Orders[] | string> {
-    if (!name) {
+  @Get('search-name/:CustomerName')
+  @ApiOperation({ summary: 'Search Customer by name' })
+  @ApiResponse({ status: 200, description: 'Customer found successfully' })
+  async findCUstomerByName(@Param('CustomerName') CustomerName: string): Promise<Orders[] | string> {
+    if (!CustomerName) {
       return 'Name is not provided';
     }
   
-    const results = await this.ordersService.findOrdersByCustomerName(name);
+    const results = await this.ordersService.findCustomerByName(CustomerName);
   
-    if (typeof results === 'string') {
-      return results;  // This will handle the 'Name not found' message
+    if (results.length === 0) {
+      return 'Customer not found';
     }
   
     return results;
   }
-  
+
     
   @Get('/todayOrders')
   @ApiOperation({summary:'Get all orders for the current day'})
@@ -109,10 +108,10 @@ export class OrdersController {
   })
   
   async getOrderTransactionsSelectedByDate(@Query() selectedDateDTO: selectedDateDTO) {
-    const { date } = selectedDateDTO; // Extract the date from the DTO
-    console.log(`Request received for date: ${date}`);  // Logging the incoming request
+    const { OrderDate} = selectedDateDTO; // Extract the date from the DTO
+    console.log(`Request received for date: ${OrderDate}`);  // Logging the incoming request
     try {
-      const transactions = await this.ordersService.findOrderTransactionBySelectedDate(date);
+      const transactions = await this.ordersService.findOrderTransactionBySelectedDate(OrderDate);
       return transactions;
     } catch (error) {
       console.error('Error retrieving order transactions:', error);

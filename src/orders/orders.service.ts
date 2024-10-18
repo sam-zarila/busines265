@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Orders } from 'src/Entities/Order.Entity';
 import { Between, Repository } from 'typeorm';
@@ -54,6 +54,7 @@ export class OrdersService {
       });
 
       if (!order) {
+        
         return `Order with number ${orderNumber} not found`;
       }
 
@@ -91,24 +92,22 @@ export class OrdersService {
 
 
 
-  async findOrdersByCustomerName(name: string): Promise<Orders[] | string> {
-    const queryBuilder = this.OrderRepository.createQueryBuilder('Orders');
-  
+
+  async findCustomerByName(CustomerName: string): Promise<Orders[] | string> {
     try {
-      const results = await queryBuilder
-        .where('LOWER(Orders.CustomerName) LIKE LOWER(:name)', { name: `%${name}%` })  // Directly use CustomerName
+      const query = this.OrderRepository.createQueryBuilder('Orders')
+        .where('Orders.CustomerName = :CustomerName', { CustomerName })
         .getMany();
-  
-      if (results.length === 0) {
-        return 'Name not found';  // Adjusted return message
+      if ((await query).length === 0) {
+        return 'Customer not found';
       }
-  
-      return results;
+      return query;
     } catch (error) {
-      console.error(`Error while searching for customer by name: ${error.message}`);
-      throw new Error(`Error while searching for customer by name: ${error.message}`);
+      console.error('Error finding customer by name:', error);
+      throw new InternalServerErrorException('Failed to retrieve customer by name.');
     }
   }
+
   
 
 //current daytotal sales
@@ -175,18 +174,18 @@ async findTotalAmountOfCurrentDay(): Promise<number> {
     try {
       const updateObject: Partial<UpdateOrderParams> = {};
 
-      if (updatedOrderDetails.OrderNumber !== undefined) {
-        updateObject.OrderNumber = updatedOrderDetails.OrderNumber;
+
+      if (updatedOrderDetails.Quantity!== undefined) {
+        updateObject.Quantity = updatedOrderDetails.Quantity;
       }
+
+     
 
       if (updatedOrderDetails.CustomerName !== undefined) {
         updateObject.CustomerName = updatedOrderDetails.CustomerName;
       }
 
-      if (updatedOrderDetails.Price !== undefined) {
-        updateObject.Price = updatedOrderDetails.Price;
-      }
-
+   
       if (updatedOrderDetails.Location !== undefined) {
         updateObject.Location = updatedOrderDetails.Location;
       }
