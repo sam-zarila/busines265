@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as jwt from 'jsonwebtoken';
 
 
 
@@ -31,6 +32,8 @@ export class UserService {
         throw new Error('Invalid Credentials')
         
       };
+      const payload ={name:newUser.name, sub:newUser.id}
+      return jwt.sign(payload, this.jwwSecret,{expiresIn:'1h'});
     }
  
 }
