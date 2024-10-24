@@ -28,9 +28,9 @@ export class UserService {
 
       if (!newUser ||!(await bcrypt.compare(password, newUser.password))) {
 
-        throw
+        throw new Error('Invalid Credentials')
         
-      }
+      };
     }
  
 }
