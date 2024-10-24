@@ -13,6 +13,7 @@ import { DrinksModule } from './drinks/drinks.module';
 import { PharmacyModule } from './pharmacy/pharmacy.module';
 import { MarketlistingModule } from './marketlisting/marketlisting.module';
 import { UserModule } from './user/user.module';
+import { User } from './user/entities/user.entity';
 
 
 // Log environment variables for debugging
@@ -29,7 +30,7 @@ import { UserModule } from './user/user.module';
       username:'root',
 
       // url: 'postgres://qdjkkngz:oB8xjyAQIR9WsqmZiGlf808y8oH819c0@raja.db.elephantsql.com/qdjkkngz', // Full connection URL
-      entities: [Orders,adminEntity,CartEntity,drinksEntity,pharmarcyEntity,marketEntity],
+      entities: [Orders,adminEntity,CartEntity,drinksEntity,pharmarcyEntity,marketEntity,User],
       synchronize: true,  // Set to false in production to prevent unwanted schema changes
     }),
     
