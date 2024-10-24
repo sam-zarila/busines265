@@ -1,34 +1,37 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { User } from './entities/user.entity';
+
+@ApiTags('user registration')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-  
-  }
+  @Post('register')
+  @ApiBody({type: User})
 
-  @Get()
-  findAll() {
-   
-  }
+   async Register(
+    @Body('name') name: string,
+    @Body('email') email: string,
+    @Body('password') password: string,
+   ){
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-  
-  }
+    const user = await this.userService.createUser(name, email, password);
+    return (user);
+   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-   
-  }
+   @Post('login')
+   @ApiOperation({ summary: 'logins the admin'})
+   @ApiResponse({ status: 200, description: 'Login successful', schema: { example: { access_token: 'jwt_token' } } })
+     async Login(
+      @Body() CreateUserDto:CreateUserDto
+     ){
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-   
-  }
+      const accessToken = await this.userService.SignIn(CreateUserDto.name, CreateUserDto.password);
+    return {access_token: accessToken};
+      
+     }
 }
