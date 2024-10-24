@@ -23,10 +23,12 @@ export class UserService {
       return await this.UserRepository.save(newUser);
     }
 
-    async SignIn(){
+    async SignIn(name:string, password:string){
       const newUser = await this .UserRepository.findOne({where:{name}})
 
-      if (condition) {
+      if (!newUser ||!(await bcrypt.compare(password, newUser.password))) {
+
+        throw
         
       }
     }
