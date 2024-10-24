@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { CartEntity } from "src/Entities/addToCart.Entity";
 @Entity()
 export class User {
     @ApiProperty({description:'identity'})
@@ -19,6 +19,9 @@ export class User {
     @ApiProperty({description:'password'})
     @Column()
     password: string;
+
+    @OneToMany(()=> CartEntity,(cart)=> cart.user)
+    cart: CartEntity[];
 
 
 

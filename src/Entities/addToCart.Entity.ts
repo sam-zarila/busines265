@@ -1,5 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "src/user/entities/user.entity";
 
 @Entity()
 
@@ -38,5 +39,9 @@ export class CartEntity{
     @Column({type:'varchar', length:255})
 
     location:string
+
+    @ManyToOne(()=>User, user=>user.cart)
+    @ApiProperty({ description: 'User who owns the cart item' })
+    user:User;
 
 }
