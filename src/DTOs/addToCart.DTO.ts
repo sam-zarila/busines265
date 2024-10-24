@@ -23,4 +23,4 @@ export class addToCartDto {
   location: string;
 
   @ApiProperty({ description: 'User ID to link the cart item' })
-  userId: number; 
+  userId: number; }
