@@ -8,12 +8,12 @@ export class User {
     id: number;
 
     @ApiProperty({description:'unique name'}) 
-    @Column({ unique: true })
+    @Column({ })
     name: string;
 
 
     @ApiProperty({description:'email address'})
-    @Column({ unique: true })
+    @Column()
     email: string;
 
     @ApiProperty({description:'password'})
