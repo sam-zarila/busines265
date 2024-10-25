@@ -22,6 +22,7 @@ export class CartService {
       // Find the user by their ID (from the frontend)
       const user = await this.userRepository.findOne({ where: { id: userId } });
       if (!user) {
+        console.error(`User not found for ID: ${userId}`);
         throw new NotFoundException('User not found');
       }
 
@@ -61,6 +62,7 @@ export class CartService {
     try {
       const user = await this.userRepository.findOne({ where: { id: userId }, relations: ['cart'] });
       if (!user) {
+        console.error(`User not found for ID: ${userId}`);
         throw new NotFoundException('User not found');
       }
 

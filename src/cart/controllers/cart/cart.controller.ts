@@ -15,6 +15,7 @@ export class CartController {
       const result = await this.cartService.addTocart(addTocart);
       return result;
     } catch (error) {
+      console.error('Error adding to cart:', error); // Log the error for debugging
       throw new HttpException('Could not add item to cart', HttpStatus.BAD_REQUEST);
     }
   }
@@ -26,6 +27,7 @@ export class CartController {
       const cartItems = await this.cartService.getCartItems(userId);
       return cartItems;
     } catch (error) {
+      console.error('Error fetching cart items:', error); // Log the error for debugging
       throw new HttpException('Could not fetch cart items', HttpStatus.BAD_REQUEST);
     }
   }
