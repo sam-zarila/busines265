@@ -14,6 +14,7 @@ import { PharmacyModule } from './pharmacy/pharmacy.module';
 import { MarketlistingModule } from './marketlisting/marketlisting.module';
 import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
+import { randomproductsModule } from './random products/randomproducts.modules';
 
 
 // Log environment variables for debugging
@@ -22,14 +23,14 @@ import { User } from './user/entities/user.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
-      host:'localhost',
-      port:3306,
-      database:'business',
-      password:'',
-      username:'root',
+      type: 'postgres',
+      // host:'localhost',
+      // port:3306,
+      // database:'business',
+      // password:'',
+      // username:'root',
 
-      // url: 'postgres://qdjkkngz:oB8xjyAQIR9WsqmZiGlf808y8oH819c0@raja.db.elephantsql.com/qdjkkngz', // Full connection URL
+       url: 'postgres://rdqygkjn:XP6Vuzl6v4c6khn-61FKZ3tha57dGMyS@stampy.db.elephantsql.com/rdqygkjn', // Full connection URL
       entities: [Orders,adminEntity,CartEntity,drinksEntity,pharmarcyEntity,marketEntity,User],
       synchronize: true,  // Set to false in production to prevent unwanted schema changes
     }),
@@ -41,6 +42,7 @@ import { User } from './user/entities/user.entity';
     PharmacyModule,
     MarketlistingModule,
     UserModule,
+    randomproductsModule,
   ],
 })
 export class AppModule {}
